@@ -34,7 +34,7 @@ class ReposDetails extends Component {
 
       <div>
         <div>
-          <div className="Repos">* {this.props.namerepos}</div> <span>{this.props.value.stargazers_count} stars</span>
+          <div className="Repos">* {this.props.namerepos}</div> <span>({liststar.length}/{this.props.value.stargazers_count}) stars</span>
           <button id={id} onClick={this.ViewStarGazers}>View</button>
         </div>
         <div>{liststar}</div>
@@ -53,7 +53,7 @@ class App extends Component {
       repos: [],
       pagerepos: 1,
       reposindex: -1,
-      loadmorestar: ""
+      loadmorestar: false
     })
   }
   componentDidUpdate(prevProps, prevState) {
@@ -92,8 +92,7 @@ class App extends Component {
 
     // }
 
-    if (this.state.reposindex !== prevState.reposindex || this.state.repos !== prevState.repos) {
-
+    if (this.state.reposindex !== prevState.reposindex && this.state.repos !== prevState.repos) {
       let x = this.state.repos.slice();
       let index = 0;
       for (var i = 0; i < this.state.repos.length; i++) {
@@ -150,7 +149,6 @@ class App extends Component {
     let x = this.state.repos.slice();
     x[value].page = 1;
     this.setState({ repos: x });
-    document.getElementById("btn-view" + value).style.display = 'none';
   }
   LoadRepos = () => {
     this.setState({ pagerepos: this.state.pagerepos + 1 });
