@@ -53,7 +53,7 @@ class App extends Component {
       repos: [],
       pagerepos: 1,
       reposindex: -1,
-      loadmorestar: false
+      loadmorestar: ""
     })
   }
   componentDidUpdate(prevProps, prevState) {
@@ -92,17 +92,13 @@ class App extends Component {
 
     // }
 
-    if (this.state.reposindex !== prevState.reposindex && this.state.repos !== prevState.repos) {
+    
+    if (this.state.repos !== prevState.repos && this.state.reposindex > -1) {
       let x = this.state.repos.slice();
-      let index = 0;
-      for (var i = 0; i < this.state.repos.length; i++) {
-        if (this.state.repos[i].page >= 1) {
-          index = i;
-        }
-      }
+      let index = this.state.reposindex;
       if (this.state.repos[index].page !== undefined ) {
 
-        if (this.state.repos[index].page === 1) {
+        if (this.state.reposindex !== prevState.reposindex && this.state.repos[index].page === 1) {
           fetch(this.state.repos[index].stargazers_url + "?per_page=5").then(response => {
             if (response.status === 200) {
               return response.json()
@@ -116,7 +112,8 @@ class App extends Component {
             this.setState({ repos: x });
           })
         }
-        else if (this.state.repos[index].page > 1 && this.state.loadmorestar === true) {
+        else if (this.state.loadmorestar === true) {
+          console.log("haha");
           fetch(this.state.repos[index].stargazers_url + "?per_page=5&page=" + this.state.repos[index].page).then(response => {
             if (response.status === 200) {
               return response.json()
@@ -155,10 +152,12 @@ class App extends Component {
   }
   LoadMoreStarGazers = (value) => {
     let x = this.state.repos.slice();
-    x[value].page = this.state.repos[value].page + 1;
+    x[value].page = x[value].page + 1;
+    // this.setState({ reposindex: value });
     this.setState({
       repos: x,
-      loadmorestar: true});
+      loadmorestar: true,
+      reposindex: value});
     console.log(this.state.repos[value].page);
   }
   render() {
